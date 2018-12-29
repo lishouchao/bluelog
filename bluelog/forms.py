@@ -68,3 +68,24 @@ class LinkForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired(), Length(1, 30)])
     url = StringField('URL', validators=[DataRequired(), URL(), Length(1, 255)])
     submit = SubmitField()
+
+#lsc
+class ChanelForm(FlaskForm):
+    name = StringField('Chanel Name',validators = [DataRequired(), Length(1,30)])
+    submit = SubmitField()
+
+    def validate_name(self, field):
+        if Chanel.query.filter_by(name=field.data).first():
+            raise ValidationError('Name already in use.')
+#lsc
+class WebsiteForm(FlaskForm):
+    name = StringField('Web Name', validators = [DataRequired(), Length(1,30)])
+    chanel = SelectField('Chanel', coerce=int, default=1)
+    submit = SubmitField()
+	
+    def __init__(self, *args, **kwargs):
+        super(WebsiteForm, self).__init__(*args, **kwargs)
+        self.chanel.choices = [(chanel.id, chanel.name)
+                                 for chanel in Chanel.query.order_by(Chanel.name).all()]
+
+

@@ -82,3 +82,28 @@ class Link(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30))
     url = db.Column(db.String(255))
+
+# lsc
+class Chanel(db.Model):
+    id = db.Column(db.Integer,primary_key=True)
+    name = db.Column(db.String(30),unique=True)
+    
+    websites = db.relationship('Website', back_populates='chanel')
+
+    def delete(self):
+        default_chanel = chanel.query.get(1)
+        websites = self.websites[:]
+        for website in websites:
+            website.chanel = default_chanel
+        db.session.delete(self)
+        db.session.commit()
+#lsc
+class Website(db.Model):
+    id = db.Column(db.Integer,primary_key=True)
+    name = db.Column(db.String(30))
+    url = db.Column(db.String(255))
+    image_url = db.Column(db.String(255))
+
+    chanel_id = db.Column(db.Integer, db.ForeignKey('chanel.id'))
+
+    chanel = db.relationship('Chanel', back_populates='websites')

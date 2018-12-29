@@ -11,7 +11,7 @@ from faker import Faker
 from sqlalchemy.exc import IntegrityError
 
 from bluelog import db
-from bluelog.models import Admin, Category, Post, Comment, Link
+from bluelog.models import Admin, Category, Post, Comment, Link, Chanel, Website
 
 fake = Faker()
 
@@ -53,7 +53,29 @@ def fake_posts(count=50):
 
         db.session.add(post)
     db.session.commit()
+#lsc
+def fake_chanels(count=10):
+    chanel = Chanel(name='Default')
+    db.session.add(chanel)
 
+    for i in range(count):
+        chanel = Chanel(name=fake.word())
+        db.session.add(chanel)
+        try:
+            db.session.commit()
+        except IntegrityError:
+            db.session.rollback()
+#lsc
+def fake_websites(count=50):
+    for i in range(count):
+        website = Website(
+            name=fake.word(),
+            url=fake.url(),
+            chanel=Chanel.query.get(random.randint(1, Chanel.query.count())),
+        )
+
+        db.session.add(website)
+    db.session.commit()
 
 def fake_comments(count=500):
     for i in range(count):
@@ -119,3 +141,6 @@ def fake_links():
     google = Link(name='Google+', url='#')
     db.session.add_all([twitter, facebook, linkedin, google])
     db.session.commit()
+
+
+

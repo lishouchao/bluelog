@@ -19,7 +19,7 @@ from bluelog.blueprints.admin import admin_bp
 from bluelog.blueprints.auth import auth_bp
 from bluelog.blueprints.blog import blog_bp
 from bluelog.extensions import bootstrap, db, login_manager, csrf, ckeditor, mail, moment, toolbar, migrate
-from bluelog.models import Admin, Post, Category, Comment, Link
+from bluelog.models import Admin, Post, Category, Comment, Link, Chanel, Website
 from bluelog.settings import config
 
 basedir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
@@ -186,9 +186,12 @@ def register_commands(app):
     @click.option('--category', default=10, help='Quantity of categories, default is 10.')
     @click.option('--post', default=50, help='Quantity of posts, default is 50.')
     @click.option('--comment', default=500, help='Quantity of comments, default is 500.')
-    def forge(category, post, comment):
+    #lsc
+    @click.option('--chanel',default=10, help='Quantity of chanels, default is 10')
+    @click.option('--website',default=50,help='Quantity of websites, default is 500.')
+    def forge(category, post, comment, chanel, website):
         """Generate fake data."""
-        from bluelog.fakes import fake_admin, fake_categories, fake_posts, fake_comments, fake_links
+        from bluelog.fakes import fake_admin, fake_categories, fake_posts, fake_comments, fake_links, fake_chanels, fake_websites
 
         db.drop_all()
         db.create_all()
@@ -202,11 +205,20 @@ def register_commands(app):
         click.echo('Generating %d posts...' % post)
         fake_posts(post)
 
+	#lsc
+        click.echo('Generating %d chanels...' % chanel)
+        fake_chanels(chanel)
+        #lsc
+        click.echo('Generating %d websites...' % website)
+        fake_websites(website)
+
         click.echo('Generating %d comments...' % comment)
         fake_comments(comment)
 
         click.echo('Generating links...')
         fake_links()
+
+
 
         click.echo('Done.')
 
