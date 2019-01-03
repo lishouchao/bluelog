@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% from 'bootstrap/form.html' import render_form %}
+
+{% block title %}Manage Chanels{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>Chanels
+            <small class="text-muted">{{ chanels|length }}</small>
+            <span class="float-right"><a class="btn btn-primary btn-sm"
+                                         href="{{ url_for('.new_chanel') }}">New Chanel</a></span>
+        </h1>
+    </div>
+    {% if chanels %}
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>No.</th>
+                <th>Name</th>
+                <th>websites</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            {% for chanel in chanels %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td><a href="{{ url_for('blog.show_chanel', chanel_id=chanel.id) }}">{{ chanel.name }}</a>
+                    </td>
+                    <td>{{ chanel.websites|length }}</td>
+                    <td>
+                        {% if chanel.id != 1 %}
+                            <a class="btn btn-info btn-sm"
+                               href="{{ url_for('.edit_chanel', chanel_id=chanel.id) }}">Edit</a>
+
+                            <form class="inline" method="post"
+                                  action="{{ url_for('.delete_chanel', chanel_id=chanel.id) }}">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                <button type="submit" class="btn btn-danger btn-sm"
+                                        onclick="return confirm('Are you sure?');">Delete
+                                </button>
+                            </form>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+        <p class="text-muted">Tips: Deleting a chanel does not delete the website under that chanel.
+            The articles under this chanel will be moved to the default chanel.</p>
+    {% else %}
+        <div class="tip"><h5>No chanels.</h5></div>
+    {% endif %}
+{% endblock %}

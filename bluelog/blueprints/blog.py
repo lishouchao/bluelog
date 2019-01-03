@@ -40,6 +40,16 @@ def show_category(category_id):
     posts = pagination.items
     return render_template('blog/category.html', category=category, pagination=pagination, posts=posts)
 
+#lsc chanel show
+@blog_bp.route('/chanel/<int:chanel_id>')
+def show_chanel(chanel_id):
+    chanel = Chanel.query.get_or_404(chanel_id)
+    page = request.args.get('page', 1, type=int)
+    per_page = current_app.config['BLUELOG_POST_PER_PAGE']
+    #pagination = Website.query.with_parent(chanel).order_by(Post.timestamp.desc()).paginate(page, per_page)
+    #posts = pagination.items
+    return render_template('blog/chanel.html', chanel=chanel, pagination=pagination, posts=posts)
+
 
 @blog_bp.route('/post/<int:post_id>', methods=['GET', 'POST'])
 def show_post(post_id):

@@ -107,13 +107,17 @@ def register_template_context(app):
         admin = Admin.query.first()
         categories = Category.query.order_by(Category.name).all()
         links = Link.query.order_by(Link.name).all()
+	#lsc
+	chanels = Chanel.query.order_by(Chanel.name).all()
+
         if current_user.is_authenticated:
             unread_comments = Comment.query.filter_by(reviewed=False).count()
         else:
             unread_comments = None
         return dict(
             admin=admin, categories=categories,
-            links=links, unread_comments=unread_comments)
+            links=links, unread_comments=unread_comments,
+            chanels=chanels)
 
 
 def register_errors(app):

@@ -11,7 +11,7 @@ from wtforms import StringField, SubmitField, SelectField, TextAreaField, Valida
     BooleanField, PasswordField
 from wtforms.validators import DataRequired, Email, Length, Optional, URL
 
-from bluelog.models import Category
+from bluelog.models import Category, Chanel
 
 
 class LoginForm(FlaskForm):
@@ -40,6 +40,18 @@ class PostForm(FlaskForm):
         self.category.choices = [(category.id, category.name)
                                  for category in Category.query.order_by(Category.name).all()]
 
+#lsc
+class WebsiteForm(FlaskForm):
+    name = StringField('Title', validators=[DataRequired(), Length(1, 60)])
+    chanel = SelectField('Chanel', coerce=int, default=1)
+    url = StringField('URL')
+    image_url = StringField('Image_URL')
+    submit = SubmitField()
+
+    def __init__(self, *args, **kwargs):
+        super(WebsiteForm, self).__init__(*args, **kwargs)
+        self.chanel.choices = [(chanel.id, chanel.name)
+                                 for chanel in Chanel.query.order_by(Chanel.name).all()]
 
 class CategoryForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired(), Length(1, 30)])
@@ -47,6 +59,15 @@ class CategoryForm(FlaskForm):
 
     def validate_name(self, field):
         if Category.query.filter_by(name=field.data).first():
+            raise ValidationError('Name already in use.')
+
+#lsc
+class ChanelForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired(), Length(1, 30)])
+    submit = SubmitField()
+
+    def validate_name(self, field):
+        if Chanel.query.filter_by(name=field.data).first():
             raise ValidationError('Name already in use.')
 
 

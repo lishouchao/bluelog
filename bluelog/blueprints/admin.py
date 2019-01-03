@@ -9,8 +9,8 @@ from flask import render_template, flash, redirect, url_for, request, current_ap
 from flask_login import login_required, current_user
 
 from bluelog.extensions import db
-from bluelog.forms import SettingForm, PostForm, CategoryForm, LinkForm
-from bluelog.models import Post, Category, Comment, Link
+from bluelog.forms import SettingForm, PostForm, CategoryForm, LinkForm, ChanelForm, WebsiteForm
+from bluelog.models import Post, Category, Comment, Link, Chanel, Website
 from bluelog.utils import redirect_back
 
 admin_bp = Blueprint('admin', __name__)
@@ -62,6 +62,8 @@ def new_post():
         flash('Post created.', 'success')
         return redirect(url_for('blog.show_post', post_id=post.id))
     return render_template('admin/new_post.html', form=form)
+
+
 
 
 @admin_bp.route('/post/<int:post_id>/edit', methods=['GET', 'POST'])
@@ -149,6 +151,11 @@ def delete_comment(comment_id):
 def manage_category():
     return render_template('admin/manage_category.html')
 
+#lsc chanel manage
+@admin_bp.route('/chanel/manage')
+@login_required
+def manage_chanel():
+    return render_template('admin/manage_chanel.html')
 
 @admin_bp.route('/category/new', methods=['GET', 'POST'])
 @login_required
@@ -163,6 +170,19 @@ def new_category():
         return redirect(url_for('.manage_category'))
     return render_template('admin/new_category.html', form=form)
 
+#lsc chanel new
+@admin_bp.route('/chanel/new', methods=['GET', 'POST'])
+@login_required
+def new_chanel():
+    form = ChanelForm()
+    if form.validate_on_submit():
+        name = form.name.data
+        chanel = Chanel(name=name)
+        db.session.add(chanel)
+        db.session.commit()
+        flash('Chanel created.', 'success')
+        return redirect(url_for('.manage_chanel'))
+    return render_template('admin/new_chanel.html', form=form)
 
 @admin_bp.route('/category/<int:category_id>/edit', methods=['GET', 'POST'])
 @login_required
@@ -181,6 +201,23 @@ def edit_category(category_id):
     form.name.data = category.name
     return render_template('admin/edit_category.html', form=form)
 
+#lsc Chanel edit
+@admin_bp.route('/chanel/<int:chanel_id>/edit', methods=['GET', 'POST'])
+@login_required
+def edit_chanel(chanel_id):
+    form = ChanelForm()
+    chanel = Chanel.query.get_or_404(chanel_id)
+    if chanel.id == 1:
+        flash('You can not edit the default chanel.', 'warning')
+        return redirect(url_for('blog.index'))
+    if form.validate_on_submit():
+        chanel.name = form.name.data
+        db.session.commit()
+        flash('Chanel updated.', 'success')
+        return redirect(url_for('.manage_chanel'))
+
+    form.name.data = chanel.name
+    return render_template('admin/edit_chanel.html', form=form)
 
 @admin_bp.route('/category/<int:category_id>/delete', methods=['POST'])
 @login_required
@@ -193,6 +230,17 @@ def delete_category(category_id):
     flash('Category deleted.', 'success')
     return redirect(url_for('.manage_category'))
 
+#lsc chanel delete
+@admin_bp.route('/chanel/<int:chanel_id>/delete', methods=['POST'])
+@login_required
+def delete_chanel(chanel_id):
+    chanel = Chanel.query.get_or_404(chanel_id)
+    if chanel.id == 1:
+        flash('You can not delete the default chanel.', 'warning')
+        return redirect(url_for('blog.index'))
+    chanel.delete()
+    flash('Chanel deleted.', 'success')
+    return redirect(url_for('.manage_chanel'))
 
 @admin_bp.route('/link/manage')
 @login_required
