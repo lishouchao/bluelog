@@ -11,7 +11,7 @@ from faker import Faker
 from sqlalchemy.exc import IntegrityError
 
 from bluelog import db
-from bluelog.models import Admin, Category, Post, Comment, Link, Chanel, Website
+from bluelog.models import Admin, Category, Post, Comment, Link, Channel, Website
 
 fake = Faker()
 
@@ -54,13 +54,16 @@ def fake_posts(count=50):
         db.session.add(post)
     db.session.commit()
 #lsc
-def fake_chanels(count=10):
-    chanel = Chanel(name='Default')
-    db.session.add(chanel)
+def fake_channels(count=10):
+    #channel = Channel(title='Default')
+    #db.session.add(channel)
 
     for i in range(count):
-        chanel = Chanel(name=fake.word())
-        db.session.add(chanel)
+        channel = Channel(
+            title=fake.word(),
+            description=fake.word()
+        )
+        db.session.add(channel)
         try:
             db.session.commit()
         except IntegrityError:
@@ -69,15 +72,18 @@ def fake_chanels(count=10):
 def fake_websites(count=50):
     for i in range(count):
         website = Website(
-            name=fake.word(),
+            title=fake.word(),
+            description=fake.word(),
             url=fake.url(),
-            chanel=Chanel.query.get(random.randint(1, Chanel.query.count())),
+            timestamp=fake.date_time_this_year(),
+
+            channel=Channel.query.get(random.randint(1, Channel.query.count())),
         )
 
         db.session.add(website)
     db.session.commit()
 
-def fake_comments(count=500):
+def fake_comments(count=50):
     for i in range(count):
         comment = Comment(
             author=fake.name(),
@@ -135,11 +141,11 @@ def fake_comments(count=500):
 
 
 def fake_links():
-    twitter = Link(name='Twitter', url='#')
+    twitter = Link(name='Baidu', url='https://www.baidu.com')
     facebook = Link(name='Facebook', url='#')
     linkedin = Link(name='LinkedIn', url='#')
     google = Link(name='Google+', url='#')
-    db.session.add_all([twitter, facebook, linkedin, google])
+    db.session.add_all([Baidu, facebook, linkedin, google])
     db.session.commit()
 
 

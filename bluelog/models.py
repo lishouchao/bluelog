@@ -84,26 +84,37 @@ class Link(db.Model):
     url = db.Column(db.String(255))
 
 # lsc
-class Chanel(db.Model):
+class Channel(db.Model):
     id = db.Column(db.Integer,primary_key=True)
-    name = db.Column(db.String(30),unique=True)
-    
-    websites = db.relationship('Website', back_populates='chanel')
+    title = db.Column(db.String(30),unique=True)
+    description = db.Column(db.String(500))
+    icon_file = db.Column(db.String(64))
+    icon_file_m = db.Column(db.String(64))
+    icon_file_s = db.Column(db.String(64))
+
+    websites = db.relationship('Website', back_populates='channel')
 
     def delete(self):
-        default_chanel = chanel.query.get(1)
+        default_channel = channel.query.get(1)
         websites = self.websites[:]
         for website in websites:
-            website.chanel = default_chanel
+            website.channel = default_channel
         db.session.delete(self)
         db.session.commit()
 #lsc
 class Website(db.Model):
     id = db.Column(db.Integer,primary_key=True)
-    name = db.Column(db.String(30))
+    title = db.Column(db.String(30))
+    description = db.Column(db.String(500))
     url = db.Column(db.String(255))
-    image_url = db.Column(db.String(255))
+    icon_file = db.Column(db.String(64))
+    icon_file_m = db.Column(db.String(64))
+    icon_file_s = db.Column(db.String(64))
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    flag = db.Column(db.Integer, default=0)
+    priority = db.Column(db.Integer,default=0)
+    #tags = db.relationship('Tag', secondary=tagging, back_populates='photos')
 
-    chanel_id = db.Column(db.Integer, db.ForeignKey('chanel.id'))
+    channel_id = db.Column(db.Integer, db.ForeignKey('channel.id'))
 
-    chanel = db.relationship('Chanel', back_populates='websites')
+    channel = db.relationship('Channel', back_populates='websites')

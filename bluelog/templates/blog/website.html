@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% from 'bootstrap/form.html' import render_form %}
+{% from 'bootstrap/pagination.html' import render_pagination %}
+
+{% block title %}{{ website.title }}{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>{{ website.title }}
+            <span class="float-right">
+        {% if current_user.is_authenticated %}
+            <a class="btn btn-info btn-sm" href="{{ url_for('admin.edit_website', website_id=website.id) }}">Edit</a>
+            <form class="inline" method="post"
+                  action="{{ url_for('admin.delete_website', website_id=website.id, next=url_for('blog.index')) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?');">Delete
+                </button>
+            </form>
+        {% endif %}
+      </span>
+        </h1>
+        <small>
+            Channel: <a
+                href="{{ url_for('.show_channel', channel_id=website.channel.id) }}">{{ website.channel.title }}</a><br>
+            Date: 
+        </small>
+    </div>
+    <div class="row">
+        <div class="col-sm-8">
+            {{ website.url }}
+            <hr>
+            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target=".postLinkModal">Share
+            </button>
+
+            <div class="comments" id="comments">
+                <h3>{{ website.image_url }} 
+
+                </h3>
+
+            </div>
+
+        </div>
+        <div class="col-sm-4 sidebar">
+            {% include "blog/_sidebar.html" %}
+        </div>
+    </div>
+{% endblock %}

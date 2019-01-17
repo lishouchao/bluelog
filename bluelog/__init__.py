@@ -19,7 +19,7 @@ from bluelog.blueprints.admin import admin_bp
 from bluelog.blueprints.auth import auth_bp
 from bluelog.blueprints.blog import blog_bp
 from bluelog.extensions import bootstrap, db, login_manager, csrf, ckeditor, mail, moment, toolbar, migrate
-from bluelog.models import Admin, Post, Category, Comment, Link, Chanel, Website
+from bluelog.models import Admin, Post, Category, Comment, Link, Channel, Website
 from bluelog.settings import config
 
 basedir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
@@ -108,7 +108,7 @@ def register_template_context(app):
         categories = Category.query.order_by(Category.name).all()
         links = Link.query.order_by(Link.name).all()
 	#lsc
-	chanels = Chanel.query.order_by(Chanel.name).all()
+	channels = Channel.query.order_by(Channel.title).all()
 
         if current_user.is_authenticated:
             unread_comments = Comment.query.filter_by(reviewed=False).count()
@@ -117,7 +117,7 @@ def register_template_context(app):
         return dict(
             admin=admin, categories=categories,
             links=links, unread_comments=unread_comments,
-            chanels=chanels)
+            channels=channels)
 
 
 def register_errors(app):
@@ -191,11 +191,11 @@ def register_commands(app):
     @click.option('--post', default=50, help='Quantity of posts, default is 50.')
     @click.option('--comment', default=500, help='Quantity of comments, default is 500.')
     #lsc
-    @click.option('--chanel',default=10, help='Quantity of chanels, default is 10')
+    @click.option('--channel',default=10, help='Quantity of channels, default is 10')
     @click.option('--website',default=50,help='Quantity of websites, default is 500.')
-    def forge(category, post, comment, chanel, website):
+    def forge(category, post, comment, channel, website):
         """Generate fake data."""
-        from bluelog.fakes import fake_admin, fake_categories, fake_posts, fake_comments, fake_links, fake_chanels, fake_websites
+        from bluelog.fakes import fake_admin, fake_categories, fake_posts, fake_comments, fake_links, fake_channels, fake_websites
 
         db.drop_all()
         db.create_all()
@@ -210,8 +210,8 @@ def register_commands(app):
         fake_posts(post)
 
 	#lsc
-        click.echo('Generating %d chanels...' % chanel)
-        fake_chanels(chanel)
+        click.echo('Generating %d channels...' % channel)
+        fake_channels(channel)
         #lsc
         click.echo('Generating %d websites...' % website)
         fake_websites(website)

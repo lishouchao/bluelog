@@ -8,10 +8,10 @@
 from flask_ckeditor import CKEditorField
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, SelectField, TextAreaField, ValidationError, HiddenField, \
-    BooleanField, PasswordField
+    BooleanField, PasswordField, IntegerField
 from wtforms.validators import DataRequired, Email, Length, Optional, URL
 
-from bluelog.models import Category, Chanel
+from bluelog.models import Category, Channel
 
 
 class LoginForm(FlaskForm):
@@ -42,16 +42,21 @@ class PostForm(FlaskForm):
 
 #lsc
 class WebsiteForm(FlaskForm):
-    name = StringField('Title', validators=[DataRequired(), Length(1, 60)])
-    chanel = SelectField('Chanel', coerce=int, default=1)
+    title = StringField('Website Title', validators=[DataRequired(), Length(1, 60)])
+    channel = SelectField('Channel', coerce=int, default=1)
+    description = TextAreaField('Description')
     url = StringField('URL')
-    image_url = StringField('Image_URL')
+    icon_file = StringField('Image_URL')
+    icon_file_m = StringField('Image_URL')
+    icon_file_s = StringField('Image_URL')
+    flag = IntegerField()
+    priority = IntegerField()
     submit = SubmitField()
 
     def __init__(self, *args, **kwargs):
         super(WebsiteForm, self).__init__(*args, **kwargs)
-        self.chanel.choices = [(chanel.id, chanel.name)
-                                 for chanel in Chanel.query.order_by(Chanel.name).all()]
+        self.channel.choices = [(channel.id, channel.title)
+                                 for channel in Channel.query.order_by(Channel.title).all()]
 
 class CategoryForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired(), Length(1, 30)])
@@ -62,12 +67,16 @@ class CategoryForm(FlaskForm):
             raise ValidationError('Name already in use.')
 
 #lsc
-class ChanelForm(FlaskForm):
-    name = StringField('Name', validators=[DataRequired(), Length(1, 30)])
+class ChannelForm(FlaskForm):
+    title = StringField('Channel Title', validators=[DataRequired(), Length(1, 30)])
+    description = TextAreaField('Description')
+    icon_file = StringField('Image_URL')
+    icon_file_m = StringField('Image_URL')
+    icon_file_s = StringField('Image_URL')
     submit = SubmitField()
 
     def validate_name(self, field):
-        if Chanel.query.filter_by(name=field.data).first():
+        if Channel.query.filter_by(name=field.data).first():
             raise ValidationError('Name already in use.')
 
 
@@ -91,22 +100,22 @@ class LinkForm(FlaskForm):
     submit = SubmitField()
 
 #lsc
-class ChanelForm(FlaskForm):
-    name = StringField('Chanel Name',validators = [DataRequired(), Length(1,30)])
-    submit = SubmitField()
+#class ChannelForm(FlaskForm):
+#    name = StringField('Channel Name',validators = [DataRequired(), Length(1,30)])
+#    submit = SubmitField()
 
-    def validate_name(self, field):
-        if Chanel.query.filter_by(name=field.data).first():
-            raise ValidationError('Name already in use.')
+#    def validate_name(self, field):
+#        if Channel.query.filter_by(name=field.data).first():
+#            raise ValidationError('Name already in use.')
 #lsc
-class WebsiteForm(FlaskForm):
-    name = StringField('Web Name', validators = [DataRequired(), Length(1,30)])
-    chanel = SelectField('Chanel', coerce=int, default=1)
-    submit = SubmitField()
+#class WebsiteForm(FlaskForm):
+#    name = StringField('Web Name', validators = [DataRequired(), Length(1,30)])
+#    channel = SelectField('Channel', coerce=int, default=1)
+#    submit = SubmitField()
 	
-    def __init__(self, *args, **kwargs):
-        super(WebsiteForm, self).__init__(*args, **kwargs)
-        self.chanel.choices = [(chanel.id, chanel.name)
-                                 for chanel in Chanel.query.order_by(Chanel.name).all()]
+#    def __init__(self, *args, **kwargs):
+#        super(WebsiteForm, self).__init__(*args, **kwargs)
+#        self.channel.choices = [(channel.id, channel.name)
+#                                 for channel in Channel.query.order_by(Channel.name).all()]
 
 
