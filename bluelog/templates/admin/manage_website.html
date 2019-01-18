@@ -16,11 +16,11 @@
     <thead>
     <tr>
         <th>No.</th>
-        <th>Name</th>
+        <th>Title</th>
         <th>Channel</th>
         <th>Date</th>
         <th>URL</th>
-        <th>Image URL</th>
+        <th>Icon</th>
         <th>Actions</th>
     </tr>
     </thead>
@@ -30,9 +30,9 @@
         <td><a href="{{ url_for('blog.show_website', website_id=website.id) }}">{{ website.title }}</a></td>
         <td><a href="{{ url_for('blog.show_channel', channel_id=website.channel.id) }}">{{ website.channel.title }}</a>
         </td>
-        <td>moment(post.timestamp).format('LL') </td>
+        <td>{{ moment(website.timestamp).format('LL') }}</td>
         <td><a href="{{ url_for('blog.show_website', website_id=website.id) }}">{{ website.url }}</a></td>
-        <td>{{ website.icon_file }}</td>
+        <td><img src="{{ website.icon_file }}" alt="Here's a logo" /></td>
         <td>
             <a class="btn btn-info btn-sm" href="{{ url_for('.edit_website', website_id=website.id) }}">Edit</a>
             <form class="inline" method="post"

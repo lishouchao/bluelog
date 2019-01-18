@@ -16,7 +16,8 @@
             <thead>
             <tr>
                 <th>No.</th>
-                <th>Name</th>
+                <th>Title</th>
+                <th>Icon</th>
                 <th>websites</th>
                 <th>Actions</th>
             </tr>
@@ -26,6 +27,7 @@
                     <td>{{ loop.index }}</td>
                     <td><a href="{{ url_for('blog.show_channel', channel_id=channel.id) }}">{{ channel.title }}</a>
                     </td>
+                    <td><img src="{{ channel.icon_file }}" alt="Here's a logo" /> </td>
                     <td>{{ channel.websites|length }}</td>
                     <td>
                         {% if channel.id != 1 %}

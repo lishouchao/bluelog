@@ -46,9 +46,9 @@ class WebsiteForm(FlaskForm):
     channel = SelectField('Channel', coerce=int, default=1)
     description = TextAreaField('Description')
     url = StringField('URL')
-    icon_file = StringField('Image_URL')
-    icon_file_m = StringField('Image_URL')
-    icon_file_s = StringField('Image_URL')
+    icon_file = StringField('Icon Image Large')
+    icon_file_m = StringField('Icon Image Medium')
+    icon_file_s = StringField('Icon Image Small')
     flag = IntegerField()
     priority = IntegerField()
     submit = SubmitField()
@@ -70,9 +70,9 @@ class CategoryForm(FlaskForm):
 class ChannelForm(FlaskForm):
     title = StringField('Channel Title', validators=[DataRequired(), Length(1, 30)])
     description = TextAreaField('Description')
-    icon_file = StringField('Image_URL')
-    icon_file_m = StringField('Image_URL')
-    icon_file_s = StringField('Image_URL')
+    icon_file = StringField('Icon Image Large')
+    icon_file_m = StringField('Icon Image Medium')
+    icon_file_s = StringField('Icon Image Small')
     submit = SubmitField()
 
     def validate_name(self, field):
